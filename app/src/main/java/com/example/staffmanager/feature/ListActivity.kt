@@ -2,15 +2,15 @@ package com.example.staffmanager.feature
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.staffmanager.R
 import com.example.staffmanager.adapter.StaffRVAdapter
 import com.example.staffmanager.database.Staff
 import com.example.staffmanager.databinding.ActivityListBinding
+import com.example.staffmanager.key.*
 import com.example.staffmanager.viewmodel.StaffViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -18,9 +18,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class ListActivity : AppCompatActivity(), StaffRVAdapter.StaffClickInterface,
     StaffRVAdapter.StaffClickDeleteInterface, StaffRVAdapter.StaffFocusInterface {
 
-    lateinit var staffsRV: RecyclerView
-    lateinit var btnAddFAB: FloatingActionButton
-    lateinit var viewModel: StaffViewModel
+    private lateinit var staffsRV: RecyclerView
+    private lateinit var btnAddFAB: FloatingActionButton
+    private lateinit var viewModel: StaffViewModel
 
     private lateinit var binding: ActivityListBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +28,7 @@ class ListActivity : AppCompatActivity(), StaffRVAdapter.StaffClickInterface,
         binding = ActivityListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val staffRVAdapter = StaffRVAdapter(this, this, this, this)
+        val staffRVAdapter = StaffRVAdapter(this, this, this)
 
         staffsRV = binding.staffsRV
         btnAddFAB = binding.btnAddFAB
@@ -40,57 +40,56 @@ class ListActivity : AppCompatActivity(), StaffRVAdapter.StaffClickInterface,
         viewModel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(StaffViewModel::class.java)
+        )[StaffViewModel::class.java]
 
-        viewModel.allStaffs.observe(this, Observer { list ->
+        viewModel.allStaffs.observe(this) { list ->
             list?.let {
                 staffRVAdapter.updateList(it)
             }
-        })
+        }
         btnAddFAB.setOnClickListener {
             val intent = Intent(this@ListActivity, AddEditItemActivity::class.java)
             startActivity(intent)
         }
+
+        supportActionBar?.title = getString(R.string.list_title)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun onStaffClick(staff: Staff) {
+    override fun onStaffClick(member: Staff) {
         val intent = Intent(this@ListActivity, AddEditItemActivity::class.java)
-        intent.putExtra("type", "Edit")
-        intent.putExtra("staffAvatar", staff.staffAvatar)
-        intent.putExtra("staffName", staff.staffName)
-        intent.putExtra("staffGender", staff.staffGender)
-        intent.putExtra("staffWork", staff.staffWork)
-        intent.putExtra("staffId", staff.id)
-        intent.putExtra("staffAvatarBitmap", staff.staffAvatarBitmap)
+
+        intent.putExtra(TYPE, getString(R.string.type_edit))
+        intent.putExtra(AVATAR, member.staffAvatar)
+        intent.putExtra(NAME, member.staffName)
+        intent.putExtra(GENDER, member.staffGender)
+        intent.putExtra(WORK, member.staffWork)
+        intent.putExtra(ID, member.id)
+        intent.putExtra(BITMAP, member.staffAvatarBitmap)
         try {
-            println("--------------------------------Log vô nè baaaaaaaaaaaaaaaaa:" +staff.staffAvatarBitmap)
             startActivity(intent)
-        }catch (e: Exception){
-            println("-------------------------------error baaaaaaaaaaaaaaaaa:" + e.message)
-//            intent.putExtra("staffAvatarBitmap", "")
-//            startActivity(intent)
-//            this.finish()
+        } catch (e: Exception) {
+            println("-------------------ERROR-------------:" + e.message)
         }
-
     }
 
-    override fun onDeleteIconClick(staff: Staff) {
-        showConfirmDelete(staff)
+    override fun onDeleteIconClick(member: Staff) {
+        showConfirmDelete(member)
     }
 
-    override fun onStaffFocus(staff: Staff) {
-        showConfirmDelete(staff)
+    override fun onStaffFocus(member: Staff) {
+        showConfirmDelete(member)
     }
 
     private fun showConfirmDelete(staff: Staff) {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Delete")
-            .setMessage("Do you want to delete?")
+            .setTitle(getString(R.string.delete))
+            .setMessage(getString(R.string.delete_warning))
             .setCancelable(true)
-            .setPositiveButton("Yes") { _, _ ->
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 confirmDelete(staff)
             }
-            .setNegativeButton("No") { _, _ ->
+            .setNegativeButton(getString(R.string.no)) { _, _ ->
                 MaterialAlertDialogBuilder(this).create().dismiss()
             }
             .show()

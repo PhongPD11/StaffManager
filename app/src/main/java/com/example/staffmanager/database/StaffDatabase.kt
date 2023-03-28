@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
@@ -23,7 +22,7 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
-@Database(entities = arrayOf(Staff::class), version = 3, exportSchema = false)
+@Database(entities = [Staff::class], version = 3, exportSchema = false)
 abstract class StaffDatabase : RoomDatabase() {
 
     abstract fun getStaffDao(): StaffDao

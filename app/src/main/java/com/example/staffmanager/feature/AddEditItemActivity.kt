@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.staffmanager.feature
 
 import android.content.Intent
@@ -6,29 +8,31 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.staffmanager.R
 import com.example.staffmanager.database.Staff
 import com.example.staffmanager.databinding.ActivityAddEditItemBinding
+import com.example.staffmanager.key.*
 import com.example.staffmanager.viewmodel.StaffViewModel
 import java.io.ByteArrayOutputStream
 
 
 class AddEditItemActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddEditItemBinding
-    lateinit var staffNameEdit: EditText
-    lateinit var staffGenderEdit: EditText
-    lateinit var staffWorkEdit: EditText
-    lateinit var btnSaveEdit: Button
-    lateinit var avatarEdit: ImageView
-    lateinit var viewModel: StaffViewModel
-    var staffId = -1
-    var staffAvatar : Int = 0
-    var staffAvatarBitmap : ByteArray? = null
+    private lateinit var staffNameEdit: EditText
+    private lateinit var staffWorkEdit: EditText
+    private lateinit var btnSaveEdit: Button
+    private lateinit var avatarEdit: ImageView
+    private lateinit var viewModel: StaffViewModel
+    private lateinit var genderSpinner: Spinner
+
+    private var selectedGender: String? =""
+    private var staffId = -1
+    private var staffAvatar : Int = 0
+    private var staffAvatarBitmap : ByteArray? = null
 
     private val pickImage = 100
     private var imageUri: Uri? = null
@@ -36,33 +40,59 @@ class AddEditItemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityAddEditItemBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        genderSpinner = binding.spinnerGender
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.gender,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            genderSpinner.adapter = adapter
+        }
+
+        genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedGender = parent.getItemAtPosition(position).toString()
+
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
 
         try {
-            binding = ActivityAddEditItemBinding.inflate(layoutInflater)
-            setContentView(binding.root)
-
-            val defaultAvatar = com.example.staffmanager.R.drawable.ic_staff
+            val defaultAvatar = R.drawable.ic_staff
             staffNameEdit = binding.editTextName
-            staffGenderEdit = binding.editTextGender
             staffWorkEdit = binding.editTextWork
             btnSaveEdit = binding.btnEditStaff
             avatarEdit = binding.imageEditAvatar
 
             viewModel = ViewModelProvider(
                 this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-            ).get(StaffViewModel::class.java)
-            val type = intent.getStringExtra("type")
-            if (type.equals("Edit")) {
-                staffAvatar = intent.getIntExtra("staffAvatar", defaultAvatar)
-                val staffName = intent.getStringExtra("staffName")
-                val staffGender = intent.getStringExtra("staffGender")
-                val staffWork = intent.getStringExtra("staffWork")
-                staffAvatarBitmap = intent.getByteArrayExtra("staffAvatarBitmap")
-                staffId = intent.getIntExtra("staffId", -1)
+            )[StaffViewModel::class.java]
+            val type = intent.getStringExtra(TYPE)
+            if (type.equals(getString(R.string.type_edit))) {
+                val staffName = intent.getStringExtra(NAME)
+                val staffGender = intent.getStringExtra(GENDER)
+                val staffWork = intent.getStringExtra(WORK)
+                staffAvatar = intent.getIntExtra(AVATAR, defaultAvatar)
+                staffAvatarBitmap = intent.getByteArrayExtra(BITMAP)
+                staffId = intent.getIntExtra(ID, -1)
 
                 staffNameEdit.setText(staffName)
-                staffGenderEdit.setText(staffGender)
                 staffWorkEdit.setText(staffWork)
+
+                val adapter = ArrayAdapter.createFromResource(this,R.array.gender ,android.R.layout.simple_spinner_item)
+                val selectionIndex = adapter.getPosition(staffGender)
+                genderSpinner.setSelection(selectionIndex)
 
                 if (staffAvatarBitmap != null){
                     val bitmap = BitmapFactory.decodeByteArray(staffAvatarBitmap, 0,staffAvatarBitmap!!.size )
@@ -72,31 +102,36 @@ class AddEditItemActivity : AppCompatActivity() {
                 }
             }
 
-
-            btnSaveEdit.setOnClickListener() {
+            btnSaveEdit.setOnClickListener {
                 val staffName = staffNameEdit.text.toString()
-                val staffGender = staffGenderEdit.text.toString()
+                val staffGender = selectedGender.toString()
                 val staffWork = staffWorkEdit.text.toString()
-                val staffAvatar = intent.getIntExtra("staffAvatar", defaultAvatar)
-                staffAvatarBitmap = intent.getByteArrayExtra("staffAvatarBitmap")
+                val staffAvatar = intent.getIntExtra(AVATAR, defaultAvatar)
+                staffAvatarBitmap = intent.getByteArrayExtra(BITMAP)
                 val staffAvatarChange = saveAvatar
 
-                if (type.equals("Edit")) {
+                if (type.equals(getString(R.string.type_edit))) {
                     if (staffName.isNotEmpty() && staffWork.isNotEmpty() && staffGender.isNotEmpty()) {
                         if (staffAvatarChange != null){
                             updateStaff(staffAvatar, staffName, staffGender, staffWork, staffAvatarChange)
                         } else if (staffAvatarBitmap != null){
                             updateStaff(staffAvatar, staffName, staffGender, staffWork, staffAvatarBitmap!!)
                         } else{
-                            Toast.makeText(this, "Choose your avatar", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, getString(R.string.toast_choose_img), Toast.LENGTH_SHORT).show()
                         }
+                    } else{
+                        Toast.makeText(this, getString(R.string.toast_missing_field), Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     if (staffName.isNotEmpty() && staffWork.isNotEmpty() && staffGender.isNotEmpty() && staffAvatarChange != null) {
                         addStaff(staffAvatar, staffName, staffGender, staffWork, staffAvatarChange)
+                    } else if (staffAvatarChange == null){
+                        Toast.makeText(this, getString(R.string.toast_choose_img), Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        Toast.makeText(this, getString(R.string.toast_missing_field), Toast.LENGTH_SHORT).show()
                     }
                 }
-                startActivity(Intent(applicationContext, ListActivity::class.java))
             }
 
             binding.imageEditAvatar.setOnClickListener {
@@ -108,6 +143,7 @@ class AddEditItemActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == pickImage) {
@@ -134,6 +170,7 @@ class AddEditItemActivity : AppCompatActivity() {
         val updateStaff = Staff(staffAvatar, staffName, staffGender, staffWork, staffAvatarBitmap)
         updateStaff.id = staffId
         viewModel.updateStaff(updateStaff)
+        startActivity(Intent(applicationContext, ListActivity::class.java))
     }
 
     private fun addStaff(
@@ -145,5 +182,6 @@ class AddEditItemActivity : AppCompatActivity() {
     ) {
         val addStaff = Staff(staffAvatar, staffName, staffGender, staffWork, staffAvatarBitmap)
         viewModel.addStaff(addStaff)
+        startActivity(Intent(applicationContext, ListActivity::class.java))
     }
 }

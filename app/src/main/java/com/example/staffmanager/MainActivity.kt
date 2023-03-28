@@ -1,11 +1,10 @@
 package com.example.staffmanager
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.staffmanager.databinding.ActivityMainBinding
 import com.example.staffmanager.feature.ListActivity
 

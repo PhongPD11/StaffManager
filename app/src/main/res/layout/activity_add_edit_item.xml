@@ -28,19 +28,18 @@
         app:layout_constraintTop_toBottomOf="@id/imageEditAvatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/editTextGender" />
+        app:layout_constraintBottom_toTopOf="@+id/spinnerGender" />
 
-    <EditText
-        android:id="@+id/editTextGender"
+    <Spinner
+        android:id="@+id/spinnerGender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Gender ..."
-        android:textSize="@dimen/textSize"
         android:minHeight="48dp"
         android:layout_margin="4dp"
+        android:textSize="@dimen/textSize"
         app:layout_constraintTop_toBottomOf="@+id/editTextName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
         android:id="@+id/editTextWork"
@@ -52,7 +51,7 @@
         android:textSize="@dimen/textSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextGender" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerGender" />
 
 
     <Button

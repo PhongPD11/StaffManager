@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="@string/avatar"
             android:textColor="@color/black"
-            android:textSize="@dimen/textTitleList"
+            android:textSize="@dimen/textSizeTitleList"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:text="@string/infomation"
             android:textColor="@color/black"
-            android:textSize="@dimen/textTitleList"
+            android:textSize="@dimen/textSizeTitleList"
             app:layout_constraintStart_toEndOf="@id/textTitleAvatar"
             app:layout_constraintEnd_toEndOf="@id/col80title"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/textTitleList"
+            android:textSize="@dimen/textSizeTitleList"
             android:text="@string/action"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,6 +93,6 @@
         app:layout_constraintStart_toEndOf="@id/col80"
         app:layout_constraintTop_toBottomOf="@id/row90"
         app:tint="@color/white"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="ContentDescription,ImageContrastCheck,SpeakableTextPresentCheck"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,4 +4,22 @@
     <string name="avatar">Avatar</string>
     <string name="action">Action</string>
     <string name="infomation">Infomation</string>
+    <string name="type_edit">Infomation</string>
+    <string name="delete">Delete</string>
+    <string name="delete_warning">Do you want to delete?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="toast_choose_img">Choose your avatar</string>
+    <string name="toast_missing_field">You miss some fields</string>
+    <string name="main_welcome">Welcome to Staff Manager!</string>
+    <string name="list">List</string>
+    <string name="exit">Exit</string>
+    <string name="name">Name</string>
+    <string name="gender">Gender</string>
+    <string name="list_title">List Staff</string>
+    <array name="gender">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </array>
 </resources>

@@ -1,6 +1,6 @@
 package com.example.staffmanager.adapter
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -13,20 +13,19 @@ import com.example.staffmanager.R
 import com.example.staffmanager.database.Staff
 
 class StaffRVAdapter(
-    val ctx: Context,
-    val staffClickInterface: StaffClickInterface,
-    val staffClickDeleteInterface: StaffClickDeleteInterface,
-    val staffFocusInterface: StaffFocusInterface,
+    private val staffClickInterface: StaffClickInterface,
+    private val staffClickDeleteInterface: StaffClickDeleteInterface,
+    private val staffFocusInterface: StaffFocusInterface,
 ): RecyclerView.Adapter<StaffRVAdapter.ViewHolder>() {
 
     private val allStaffs = ArrayList<Staff>()
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val staffName = itemView.findViewById<TextView>(R.id.textName)
-        val staffAvatar = itemView.findViewById<ImageView>(R.id.imageAvatar)
-        val staffGender = itemView.findViewById<TextView>(R.id.textGender)
-        val staffWork = itemView.findViewById<TextView>(R.id.textWork)
-        val staffDelete = itemView.findViewById<ImageButton>(R.id.btnDelete)
+        val staffName = itemView.findViewById<TextView>(R.id.textName)!!
+        val staffAvatar = itemView.findViewById<ImageView>(R.id.imageAvatar)!!
+        val staffGender = itemView.findViewById<TextView>(R.id.textGender)!!
+        val staffWork = itemView.findViewById<TextView>(R.id.textWork)!!
+        val staffDelete = itemView.findViewById<ImageButton>(R.id.btnDelete)!!
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,33 +34,29 @@ class StaffRVAdapter(
         return ViewHolder(itemView)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.staffName.setText("Name: " + allStaffs.get(position).staffName)
-        holder.staffGender.setText("Gender: " +allStaffs.get(position).staffGender)
-        holder.staffWork.setText("Work: " + allStaffs.get(position).staffWork)
+        holder.staffName.text = "Name: " + allStaffs[position].staffName
+        holder.staffGender.text = "Gender: " + allStaffs[position].staffGender
+        holder.staffWork.text = "Work: " + allStaffs[position].staffWork
 
-        val avatarBitmap = allStaffs.get(position).staffAvatarBitmap
-
-
-        if(avatarBitmap != null){
-            val bitmap = BitmapFactory.decodeByteArray(avatarBitmap, 0,avatarBitmap!!.size )
-            holder.staffAvatar.setImageBitmap(bitmap)
-        }
-        else {
-            holder.staffAvatar.setImageResource(allStaffs.get(position).staffAvatar)
-        }
+        val avatarBitmap = allStaffs[position].staffAvatarBitmap
 
 
-        holder.staffDelete.setOnClickListener() {
-            staffClickDeleteInterface.onDeleteIconClick(allStaffs.get(position))
+        val bitmap = BitmapFactory.decodeByteArray(avatarBitmap, 0, avatarBitmap.size )
+        holder.staffAvatar.setImageBitmap(bitmap)
+
+
+        holder.staffDelete.setOnClickListener {
+            staffClickDeleteInterface.onDeleteIconClick(allStaffs[position])
         }
 
-        holder.itemView.setOnClickListener() {
-            staffClickInterface.onStaffClick(allStaffs.get(position))
+        holder.itemView.setOnClickListener {
+            staffClickInterface.onStaffClick(allStaffs[position])
         }
 
         holder.itemView.setOnLongClickListener {
-            staffFocusInterface.onStaffFocus(allStaffs.get(position))
+            staffFocusInterface.onStaffFocus(allStaffs[position])
             true
         }
     }
@@ -70,6 +65,7 @@ class StaffRVAdapter(
         return allStaffs.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newList: List<Staff>) {
         allStaffs.clear()
         allStaffs.addAll(newList)
