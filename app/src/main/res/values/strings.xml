@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Staff Manager</string>
+    <string name="search">Search</string>
+    <string name="avatar">Avatar</string>
+    <string name="action">Action</string>
+    <string name="infomation">Infomation</string>
+</resources>
