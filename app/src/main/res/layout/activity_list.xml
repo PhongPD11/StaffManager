@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="@dimen/textTitleList"
-            android:layout_paddingLeft="4dp"
             android:text="@string/action"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
