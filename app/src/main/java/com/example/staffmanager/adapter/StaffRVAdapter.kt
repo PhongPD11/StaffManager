@@ -42,10 +42,8 @@ class StaffRVAdapter(
 
         val avatarBitmap = allStaffs[position].staffAvatarBitmap
 
-
         val bitmap = BitmapFactory.decodeByteArray(avatarBitmap, 0, avatarBitmap.size )
         holder.staffAvatar.setImageBitmap(bitmap)
-
 
         holder.staffDelete.setOnClickListener {
             staffClickDeleteInterface.onDeleteIconClick(allStaffs[position])
@@ -60,7 +58,6 @@ class StaffRVAdapter(
             true
         }
     }
-
     override fun getItemCount(): Int {
         return allStaffs.size
     }

@@ -66,7 +66,8 @@
         app:layout_constraintTop_toBottomOf="@id/listStaffTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/staff_rv_item"/>
+        tools:listitem="@layout/staff_rv_item"
+        android:paddingBottom="80dp"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/col80"

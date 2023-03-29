@@ -33,6 +33,7 @@
             android:id="@+id/imageAvatar"
             android:layout_width="@dimen/rv_avatar_size"
             android:layout_height="@dimen/rv_avatar_size"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
