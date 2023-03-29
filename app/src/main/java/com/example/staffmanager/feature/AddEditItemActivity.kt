@@ -2,6 +2,7 @@
 
 package com.example.staffmanager.feature
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,6 +13,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.staffmanager.R
 import com.example.staffmanager.database.Staff
 import com.example.staffmanager.databinding.ActivityAddEditItemBinding
@@ -29,14 +31,15 @@ class AddEditItemActivity : AppCompatActivity() {
     private lateinit var viewModel: StaffViewModel
     private lateinit var genderSpinner: Spinner
 
-    private var selectedGender: String? =""
+    private var selectedGender: String? = ""
     private var staffId = -1
-    private var staffAvatar : Int = 0
-    private var staffAvatarBitmap : ByteArray? = null
+    private var staffAvatar: Int = 0
+    private var staffAvatarBitmap: ByteArray? = null
 
     private val pickImage = 100
     private var imageUri: Uri? = null
-    private var saveAvatar: ByteArray? =null
+    private var saveAvatar: ByteArray? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 selectedGender = parent.getItemAtPosition(position).toString()
 
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Do nothing
             }
@@ -79,6 +83,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
             )[StaffViewModel::class.java]
             val type = intent.getStringExtra(TYPE)
+
             if (type.equals(getString(R.string.type_edit))) {
                 val staffName = intent.getStringExtra(NAME)
                 val staffGender = intent.getStringExtra(GENDER)
@@ -90,13 +95,23 @@ class AddEditItemActivity : AppCompatActivity() {
                 staffNameEdit.setText(staffName)
                 staffWorkEdit.setText(staffWork)
 
-                val adapter = ArrayAdapter.createFromResource(this,R.array.gender ,android.R.layout.simple_spinner_item)
+                val adapter = ArrayAdapter.createFromResource(
+                    this,
+                    R.array.gender,
+                    android.R.layout.simple_spinner_item
+                )
                 val selectionIndex = adapter.getPosition(staffGender)
                 genderSpinner.setSelection(selectionIndex)
 
-                if (staffAvatarBitmap != null){
-                    val bitmap = BitmapFactory.decodeByteArray(staffAvatarBitmap, 0,staffAvatarBitmap!!.size )
-                    avatarEdit.setImageBitmap(bitmap)
+
+                if (staffAvatarBitmap != null) {
+                    val bitmap = BitmapFactory.decodeByteArray(
+                        staffAvatarBitmap,
+                        0,
+                        staffAvatarBitmap!!.size
+                    )
+                    Glide.with(this).load(getImageUriFromBitmap(this, bitmap)).override(100,100).fitCenter().into(avatarEdit)
+//                    avatarEdit.setImageBitmap(bitmap)
                 } else {
                     avatarEdit.setImageResource(defaultAvatar)
                 }
@@ -110,37 +125,74 @@ class AddEditItemActivity : AppCompatActivity() {
                 staffAvatarBitmap = intent.getByteArrayExtra(BITMAP)
                 val staffAvatarChange = saveAvatar
 
+
                 if (type.equals(getString(R.string.type_edit))) {
                     if (staffName.isNotEmpty() && staffWork.isNotEmpty() && staffGender.isNotEmpty()) {
-                        if (staffAvatarChange != null){
-                            updateStaff(staffAvatar, staffName, staffGender, staffWork, staffAvatarChange)
-                        } else if (staffAvatarBitmap != null){
-                            updateStaff(staffAvatar, staffName, staffGender, staffWork, staffAvatarBitmap!!)
-                        } else{
-                            Toast.makeText(this, getString(R.string.toast_choose_img), Toast.LENGTH_SHORT).show()
+                        if (staffAvatarChange != null) {
+                            updateStaff(
+                                staffAvatar,
+                                staffName,
+                                staffGender,
+                                staffWork,
+                                staffAvatarChange
+                            )
+                        } else if (staffAvatarBitmap != null) {
+                            updateStaff(
+                                staffAvatar,
+                                staffName,
+                                staffGender,
+                                staffWork,
+                                staffAvatarBitmap!!
+                            )
+                        } else {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.toast_choose_img),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    } else{
-                        Toast.makeText(this, getString(R.string.toast_missing_field), Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.toast_missing_field),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     if (staffName.isNotEmpty() && staffWork.isNotEmpty() && staffGender.isNotEmpty() && staffAvatarChange != null) {
                         addStaff(staffAvatar, staffName, staffGender, staffWork, staffAvatarChange)
-                    } else if (staffAvatarChange == null){
-                        Toast.makeText(this, getString(R.string.toast_choose_img), Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        Toast.makeText(this, getString(R.string.toast_missing_field), Toast.LENGTH_SHORT).show()
+                    } else if (staffAvatarChange == null) {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.toast_choose_img),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.toast_missing_field),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
 
             binding.imageEditAvatar.setOnClickListener {
-                val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                val gallery =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
                 startActivityForResult(gallery, pickImage)
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             println("ERROR ----------------------------------------------${e.message}")
         }
+    }
+
+    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path.toString())
     }
 
     @Deprecated("Deprecated in Java")
@@ -152,13 +204,28 @@ class AddEditItemActivity : AppCompatActivity() {
             val bitmap = BitmapFactory.decodeStream(inputStream)
 
             val outputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
             val compressedByteArray = outputStream.toByteArray()
 
+            println("------------------URI------------------------------: $imageUri")
             saveAvatar = compressedByteArray
-            avatarEdit.setImageBitmap(bitmap)
+//            avatarEdit.setImageBitmap(bitmap)
+            Glide.with(this).load(imageUri).into(avatarEdit)
         }
     }
+
+//    private fun getImageSize(context: Context, uri: Uri): Long {
+//        var fileSize = -1L
+//        val contentResolver: ContentResolver = context.contentResolver
+//        try {
+//            val inputStream = contentResolver.openInputStream(uri)
+//            fileSize = inputStream?.available()?.toLong() ?: -1L
+//            inputStream?.close()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//        return fileSize
+//    }
 
     private fun updateStaff(
         staffAvatar: Int,
