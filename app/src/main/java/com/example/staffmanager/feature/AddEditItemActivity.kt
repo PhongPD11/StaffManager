@@ -81,6 +81,8 @@ class AddEditItemActivity : AppCompatActivity() {
         }
 
         try {
+
+
             val defaultAvatar = R.drawable.ic_staff
             staffNameEdit = binding.editTextName
             staffWorkEdit = binding.editTextWork
@@ -91,6 +93,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
             )[StaffViewModel::class.java]
             val type = intent.getStringExtra(TYPE)
+
             if (type.equals(getString(R.string.type_edit))) {
                 val staffName = intent.getStringExtra(NAME)
                 val staffGender = intent.getStringExtra(GENDER)

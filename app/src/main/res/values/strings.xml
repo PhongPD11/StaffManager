@@ -17,6 +17,10 @@
     <string name="name">Name</string>
     <string name="gender">Gender</string>
     <string name="list_title">List Staff</string>
+    <string name="save">Save</string>
+    <string name="hint_work">Work ...</string>
+    <string name="hint_name">Name ...</string>
+    <string name="choose_avatar">Choose Avatar</string>
     <array name="gender">
         <item>Male</item>
         <item>Female</item>

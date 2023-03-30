@@ -16,6 +16,7 @@
         android:theme="@style/Theme.StaffManager"
         tools:targetApi="31">
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".feature.AddEditItemActivity"
             android:exported="false" />
         <activity

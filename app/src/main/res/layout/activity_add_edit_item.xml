@@ -17,19 +17,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/editTextName"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/choose_avatar" />
 
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Name ..."
+        android:background="@null"
+        android:hint="@string/hint_name"
         android:textSize="@dimen/textSize"
+        android:maxLength="60"
+        android:textColor="@color/black"
         android:layout_margin="4dp"
         app:layout_constraintTop_toBottomOf="@id/imageEditAvatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/spinnerGender" />
+        app:layout_constraintBottom_toTopOf="@+id/spinnerGender"
+        tools:ignore="Autofill,TextFields" />
 
     <Spinner
         android:id="@+id/spinnerGender"
@@ -38,6 +43,7 @@
         android:layout_margin="4dp"
         android:minHeight="48dp"
         android:textSize="@dimen/textSize"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextName"
@@ -48,21 +54,25 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="4dp"
-        android:hint="Work ..."
+        android:hint="@string/hint_work"
         android:minHeight="48dp"
+        android:maxLength="30"
+        android:focusable="true"
+        android:textColor="@color/black"
         android:textSize="@dimen/textSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerGender" />
 
-
     <Button
         android:id="@+id/btnEditStaff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
